@@ -1,4 +1,4 @@
-## Fmylife.com Scraper
+## Fmylife.com post generator
 This simple scraper is built using Scrapy for Python. Its goal is to scrap simple information such as the post title, post, up
 and downvotes, and amount of comments. More or less can be added, such as time of post, author name, etc.
 
