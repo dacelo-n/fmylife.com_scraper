@@ -1,14 +1,16 @@
-from pathlib import Path
-
+from typing import Iterable
 import scrapy
 
 
 class PostSpider(scrapy.Spider):
     name = "posts"
-    start_urls = ["https://www.fmylife.com/"]
-    base_url = "https://www.fmylife.com/?page="
-    page_number = 1
+    allowed_domainss = ["https://www.fmylife.com/"]
+    base_url = "https://www.fmylife.com/?page={}"
 
+
+    def start_requests(self):
+        for i in range(1, 1001):
+            yield   scrapy.Request(self.base_url.format(i))
 
     def parse(self, response):
         posts = response.css("article.bg-white")
@@ -20,7 +22,6 @@ class PostSpider(scrapy.Spider):
             agree = post.xpath(".//div[contains(@class, 'flex vote-type-0')]//span[contains(@class, 'vote-btn-count')]/text()").get()
             deserved = post.xpath(".//div[contains(@class, 'flex vote-type-1')]//span[contains(@class, 'vote-btn-count')]/text()").get()
 
-
             yield {
                 'title': title,
                 'meta': meta,
@@ -29,7 +30,3 @@ class PostSpider(scrapy.Spider):
                 'agree': agree,
                 'deserved': deserved
             }
-        self.page_number += 1
-        next_page_url = self.base_url + str(self.page_number)
-
-        yield scrapy.Request(next_page_url)
